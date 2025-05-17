@@ -1,0 +1,118 @@
+html,
+body {
+  margin: 0;
+  padding: 5px;
+  height: 100%;
+  width: 100%;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+#map {
+    position: relative;   /* ← make this the containing block for the absolute svg */
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+}
+  
+#overlay {
+    position: absolute;
+    top: 0;               /* ← pin to the top-left of #map */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#overlay circle {
+    fill: steelblue;
+    fill-opacity: 0.6;   /* 60% opaque so overlaps show density */
+    stroke: white;
+    stroke-width: 1px;
+    pointer-events: auto;
+    --color-departures: steelblue;
+    --color-arrivals: darkorange;
+    --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+    );
+    fill: var(--color);
+}
+
+
+
+/* 1) lay out the header */
+#time-filter {
+    display: flex;
+    align-items: baseline;
+    gap: 1em;
+    margin-bottom: 1em;
+  }
+  
+/* push the label to the right (if there’s other header content) */
+#time-filter label {
+margin-left: auto;
+display: flex;
+align-items: center;
+gap: 0.5em;
+}
+
+/* 2) make the slider a reasonable width */
+#time-slider {
+width: 200px;
+}
+
+/* 3) keep <time> and <em> on their own lines */
+#time-display,
+#any-time {
+display: block;
+margin: 0.25em 0 0;
+}
+
+/* 4) style the “any time” text to distinguish it */
+#any-time {
+color: #777;
+font-style: italic;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;           /* space between each legend item */
+    margin-block: 1em;  /* space above & below */
+    font-size: 1rem;
+    color: #333;
+
+  }
+
+  
+
+/* Make each legend <div> draw a colored dot */
+.legend > div {
+    position: relative;       /* for ::before positioning */
+    padding-left: 1.5em;      /* room for the swatch */
+    line-height: 1;           /* so the swatch centers vertically */
+  }
+  
+  .legend > div::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background:
+      /* hard-code the three colors here */
+      var(--swatch-color, orange);
+  }
+  
+  /* Assign each child its own swatch color */
+  .legend > div:nth-child(1)::before { --swatch-color: steelblue; }
+  .legend > div:nth-child(2)::before { background: hotpink; }
+  .legend > div:nth-child(3)::before { --swatch-color: darkorange; }
+  
